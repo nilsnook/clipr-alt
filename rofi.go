@@ -1,9 +1,9 @@
 package main
 
 import (
-	"fmt"
 	"io"
 	"os/exec"
+	"strings"
 )
 
 func (c *clipr) copy() {
@@ -19,7 +19,7 @@ func (c *clipr) copy() {
 	xselcmd.Stdin = pr
 	go func() {
 		defer pw.Close()
-		fmt.Fprintf(pw, txt)
+		io.Copy(pw, strings.NewReader(txt))
 	}()
 	err := xselcmd.Run()
 	if err != nil {
