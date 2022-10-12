@@ -6,7 +6,7 @@ import (
 	"os/exec"
 )
 
-func (c *clipr) copyToClipboard() {
+func (c *clipr) copy() {
 	txt := rofiDecode(c.state.arg)
 	if len(txt) == 0 {
 		c.errorlog.Fatalln("Selection empty! Copy to clipboard failed.")

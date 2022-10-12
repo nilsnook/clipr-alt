@@ -1,18 +1,27 @@
 package main
 
 import (
+	"encoding/json"
+	"errors"
 	"os"
 	"unicode/utf8"
 )
 
-func createDirIfNotExists(path string) error {
-	if _, err := os.Stat(path); os.IsNotExist(err) {
-		err := os.MkdirAll(path, 0644)
-		if err != nil {
-			return err
-		}
+func createDirIfNotExists(path string) (err error) {
+	if _, err = os.Stat(path); errors.Is(err, os.ErrNotExist) {
+		err = os.MkdirAll(path, 0755)
 	}
-	return nil
+	return
+}
+
+func writeJSON(f *os.File, data clipboard) (err error) {
+	err = json.NewEncoder(f).Encode(data)
+	return
+}
+
+func readJSON(f *os.File) (data clipboard, err error) {
+	err = json.NewDecoder(f).Decode(&data)
+	return
 }
 
 func rofiEncode(txt string) (enctxt string) {

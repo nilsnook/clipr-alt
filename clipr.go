@@ -15,13 +15,19 @@ type state struct {
 	arg  string
 }
 
-type text struct {
-	id     int
-	val    string
-	marked bool
+// type entry struct {
+// 	id     int
+// 	val    string
+// 	marked bool
+// }
+
+type entry struct {
+	Val string `json:"val"`
 }
 
-type clipboard []text
+type clipboard struct {
+	List []entry `json:"list"`
+}
 
 type clipr struct {
 	infolog   *log.Logger
@@ -36,6 +42,5 @@ func newClipr(f *os.File) *clipr {
 	return &clipr{
 		infolog:  infolog,
 		errorlog: errorlog,
-		// TODO: init clipboard
 	}
 }
