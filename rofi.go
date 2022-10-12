@@ -13,7 +13,7 @@ func (c *clipr) copySelection() {
 		return
 	}
 
-	// copy selection to clipboard
+	// copy selection to system clipboard
 	pr, pw := io.Pipe()
 	xselcmd := exec.Command("xsel", "-ib")
 	xselcmd.Stdin = pr
@@ -36,4 +36,13 @@ func (c *clipr) deleteSelection() {
 	c.delete(entry{
 		Val: val(txt),
 	})
+
+	// if the last entry is deleted
+	// clear system clipboard as well
+	if len(c.clipboard.List) == 0 {
+		err := exec.Command("xsel", "-cb").Run()
+		if err != nil {
+			c.errorlog.Fatalln(err)
+		}
+	}
 }
