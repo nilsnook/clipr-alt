@@ -18,6 +18,10 @@ func (s *set) add(entries ...entry) {
 	}
 }
 
+func (s *set) delete(e entry) {
+	delete(*s, e.Val)
+}
+
 func (s set) entries() []entry {
 	entries := make([]entry, 0, len(s))
 	for k, v := range s {

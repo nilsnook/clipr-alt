@@ -1,8 +1,10 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"os"
+	"os/exec"
 	"time"
 )
 
@@ -44,5 +46,27 @@ func newClipr(f *os.File) *clipr {
 	return &clipr{
 		infolog:  infolog,
 		errorlog: errorlog,
+	}
+}
+
+func (c *clipr) getLatestTextFromClipboard() {
+	out, err := exec.Command("xsel", "-ob").Output()
+	if err != nil {
+		c.errorlog.Fatalln(err)
+	}
+	newEntry := entry{
+		// replace newline (\n) or carriage return (\r) with '\xA0'
+		Val: val(rofiEncode(string(out))),
+		// update last modified time
+		Meta: meta{
+			LastModified: time.Now(),
+		},
+	}
+	c.write(newEntry)
+}
+
+func (c *clipr) renderClipboard() {
+	for _, e := range c.clipboard.List {
+		fmt.Println(e.Val)
 	}
 }

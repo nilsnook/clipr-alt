@@ -81,3 +81,13 @@ func (c *clipr) write(e entry) {
 		c.errorlog.Fatalln(err)
 	}
 }
+
+func (c *clipr) delete(e entry) {
+	s := newSet(c.clipboard.List...)
+	s.delete(e)
+	c.clipboard.List = s.entries()
+	err := writeJSON(c.getDBFile(os.O_WRONLY), c.clipboard)
+	if err != nil {
+		c.errorlog.Fatalln(err)
+	}
+}

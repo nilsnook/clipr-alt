@@ -4,9 +4,14 @@ import (
 	"fmt"
 	"log"
 	"os"
-	"os/exec"
 	"path"
-	"time"
+)
+
+const (
+	// Enter
+	SELECT = 1
+	// kb-custom-1
+	DELETE = 10
 )
 
 func main() {
@@ -24,35 +29,20 @@ func main() {
 	// initialize clipboard
 	c.initClipboard()
 
-	// check for current state
-	// SELECT - put selected text in clipboard
-	if c.state.val == 1 {
-		c.copy()
+	// handle rofi events
+	switch c.state.val {
+	case SELECT:
+		c.copySelection()
+		c.getLatestTextFromClipboard()
+	case DELETE:
+		c.deleteSelection()
+	default:
+		c.getLatestTextFromClipboard()
 	}
 
 	// use hot keys
-	// fmt.Println("\000use-hot-keys\x1ftrue")
-
-	// get latest text from X clipboard
-	out, err := exec.Command("xsel", "-ob").Output()
-	if err != nil {
-		c.errorlog.Fatalln(err)
-	}
-	newEntry := entry{
-		// replace newline (\n) or carriage return (\r) with '\xA0'
-		Val: val(rofiEncode(string(out))),
-		// update last modified time
-		Meta: meta{
-			LastModified: time.Now(),
-		},
-	}
-	c.write(newEntry)
-
-	// rofitxt := fmt.Sprintf("%s\000info\x1f{\"id\":1}", string(enctxt))
-	// fmt.Println(rofitxt)
-	// fmt.Println("This is a test\000info\x1f{\"id\":2}")
-
-	for _, e := range c.clipboard.List {
-		fmt.Println(e.Val)
-	}
+	// for events like delete
+	fmt.Println("\000use-hot-keys\x1ftrue")
+	// render clipboard
+	c.renderClipboard()
 }

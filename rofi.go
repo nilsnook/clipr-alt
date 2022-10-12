@@ -6,10 +6,10 @@ import (
 	"strings"
 )
 
-func (c *clipr) copy() {
+func (c *clipr) copySelection() {
 	txt := rofiDecode(c.state.arg)
 	if len(txt) == 0 {
-		c.errorlog.Fatalln("Selection empty! Copy to clipboard failed.")
+		c.errorlog.Fatalln("Selection empty! Failed to copy to clipboard.")
 		return
 	}
 
@@ -25,4 +25,15 @@ func (c *clipr) copy() {
 	if err != nil {
 		c.errorlog.Fatalln(err)
 	}
+}
+
+func (c *clipr) deleteSelection() {
+	txt := rofiDecode(c.state.arg)
+	if len(txt) == 0 {
+		c.errorlog.Fatalln("Selection empty! Failed to delete clipboard entry.")
+		return
+	}
+	c.delete(entry{
+		Val: val(txt),
+	})
 }
