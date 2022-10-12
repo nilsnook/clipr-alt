@@ -1,21 +1,35 @@
 package main
 
-type set[E comparable] map[E]struct{}
+import "sort"
 
-func newSet[E comparable]() set[E] {
-	return set[E]{}
+type set map[val]meta
+
+func newSet(entries ...entry) (s set) {
+	s = set{}
+	for _, e := range entries {
+		s[e.Val] = e.Meta
+	}
+	return
 }
 
-func (s *set[E]) add(vals ...E) {
-	for _, v := range vals {
-		(*s)[v] = struct{}{}
+func (s *set) add(entries ...entry) {
+	for _, e := range entries {
+		(*s)[e.Val] = e.Meta
 	}
 }
 
-func (s set[E]) values() []E {
-	vals := make([]E, 0, len(s))
-	for v := range s {
-		vals = append(vals, v)
+func (s set) entries() []entry {
+	entries := make([]entry, 0, len(s))
+	for k, v := range s {
+		e := entry{
+			Val:  k,
+			Meta: v,
+		}
+		entries = append(entries, e)
 	}
-	return vals
+	// sort entries w.r.t last modified time
+	sort.Slice(entries, func(i, j int) bool {
+		return entries[i].Meta.LastModified.After(entries[j].Meta.LastModified)
+	})
+	return entries
 }

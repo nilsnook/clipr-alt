@@ -6,6 +6,7 @@ import (
 	"os"
 	"os/exec"
 	"path"
+	"time"
 )
 
 func main() {
@@ -39,7 +40,11 @@ func main() {
 	}
 	newEntry := entry{
 		// replace newline (\n) or carriage return (\r) with '\xA0'
-		Val: rofiEncode(string(out)),
+		Val: val(rofiEncode(string(out))),
+		// update last modified time
+		Meta: meta{
+			LastModified: time.Now(),
+		},
 	}
 	c.write(newEntry)
 

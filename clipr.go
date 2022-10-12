@@ -3,6 +3,7 @@ package main
 import (
 	"log"
 	"os"
+	"time"
 )
 
 type info struct {
@@ -15,14 +16,15 @@ type state struct {
 	arg  string
 }
 
-// type entry struct {
-// 	id     int
-// 	val    string
-// 	marked bool
-// }
+type val string
+
+type meta struct {
+	LastModified time.Time `json:"last_modified"`
+}
 
 type entry struct {
-	Val string `json:"val"`
+	Val  val  `json:"val"`
+	Meta meta `json:"meta"`
 }
 
 type clipboard struct {

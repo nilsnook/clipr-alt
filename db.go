@@ -72,11 +72,10 @@ func (c *clipr) read() {
 	}
 }
 
-func (c *clipr) write(t entry) {
-	c.clipboard.List = append(c.clipboard.List, t)
-	s := newSet[entry]()
-	s.add(c.clipboard.List...)
-	c.clipboard.List = s.values()
+func (c *clipr) write(e entry) {
+	c.clipboard.List = append(c.clipboard.List, e)
+	s := newSet(c.clipboard.List...)
+	c.clipboard.List = s.entries()
 	err := writeJSON(c.getDBFile(os.O_WRONLY), c.clipboard)
 	if err != nil {
 		c.errorlog.Fatalln(err)
