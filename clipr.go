@@ -5,6 +5,7 @@ import (
 	"log"
 	"os"
 	"os/exec"
+	"path"
 	"time"
 )
 
@@ -37,15 +38,22 @@ type clipr struct {
 	infolog   *log.Logger
 	errorlog  *log.Logger
 	state     state
+	dbdir     string
 	clipboard clipboard
 }
 
 func newClipr(f *os.File) *clipr {
 	infolog := log.New(f, "INFO\t", log.LstdFlags)
 	errorlog := log.New(f, "ERROR\t", log.LstdFlags|log.Lshortfile)
+	userhomedir, err := os.UserHomeDir()
+	if err != nil {
+		log.Fatalln(err)
+	}
+	dbdir := path.Join(userhomedir, DB_DIR)
 	return &clipr{
 		infolog:  infolog,
 		errorlog: errorlog,
+		dbdir:    dbdir,
 	}
 }
 
